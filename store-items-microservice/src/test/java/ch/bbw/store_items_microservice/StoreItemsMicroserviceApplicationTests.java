@@ -1,10 +1,10 @@
-package ch.bbw.mampf_macher_parent;
+package ch.bbw.store_items_microservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MampfMacherParentApplicationTests {
+class StoreItemsMicroserviceApplicationTests {
 
 	@Test
 	void contextLoads() {

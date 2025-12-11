@@ -30,8 +30,9 @@
 
   <modules>
     <module>recipe-finder-microservice</module>
-	<!-- place to add further micro services -->
-</modules>
+    <module>store-items-microservice</module>
+    <module>store-checkout-microservice</module>
+  </modules>
 
   <dependencies>
     <dependency>
