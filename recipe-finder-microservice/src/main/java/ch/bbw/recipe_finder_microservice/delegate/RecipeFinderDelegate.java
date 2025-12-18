@@ -5,16 +5,29 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ch.bbw.recipe_finder_microservice.entity.Ingredient;
-import ch.bbw.recipe_finder_microservice.repository.IngredientRepository;
+import ch.bbw.recipe_finder_microservice.entity.*;
+import ch.bbw.recipe_finder_microservice.repository.*;
+import ch.bbw.recipe_finder_microservice.service.RecipeService;
+
 
 @RestController
 public class RecipeFinderDelegate {
 
     @Autowired
     private IngredientRepository ingredientRepository;
+
+    @Autowired
+    private PreferencesRepository preferencesRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
+
+    @Autowired
+    private RecipeService recipeService;
 
     @GetMapping("/hello")
     public String hello() {
@@ -26,5 +39,26 @@ public class RecipeFinderDelegate {
         return ingredientRepository.findAll().stream()
                 .map(Ingredient::getName)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/preferences")
+    public List<String> getPreferences() {
+        return preferencesRepository.findAll().stream()
+                .map(Preferences::getName)
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/recipe/{id}")
+    public Recipe getRecipeById(@PathVariable Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + id));
+    }
+
+    @GetMapping("/recipe")
+    public List<Recipe> getRecipes(
+            @RequestParam List<String> ingredients,
+            @RequestParam List<String> preferences
+    ) {
+        return recipeService.findRecipes(ingredients, preferences);
     }
 }

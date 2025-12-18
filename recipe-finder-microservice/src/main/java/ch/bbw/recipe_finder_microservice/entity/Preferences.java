@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ingredients")
-public class Ingredient {
+@Table(name = "preferences")
+public class Preferences {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +25,6 @@ public class Ingredient {
 
     // mc-mc with Recipe
     @JsonIgnore
-    @ManyToMany(mappedBy = "ingredients")
+    @ManyToMany(mappedBy = "preferences")
     private List<Recipe> recipes;
 }
