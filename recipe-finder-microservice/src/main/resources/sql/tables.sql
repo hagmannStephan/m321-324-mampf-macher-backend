@@ -1,4 +1,11 @@
 -- Active: 1766042947393@@postgresdb@5432@postgres@public
+
+-- Create schema if not exists
+CREATE SCHEMA IF NOT EXISTS recipe_schema;
+
+-- Set search path to use the new schema
+SET search_path TO recipe_schema;
+
 -- 1. Create tables
 CREATE TABLE preferences (
     id BIGSERIAL PRIMARY KEY,
