@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ingredients")
-public class Ingredient {
+@Table(name = "preferences")
+public class Preferences {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,6 @@ public class Ingredient {
     private String name;
 
     // mc-mc with Recipe
-    @ManyToMany(mappedBy = "ingredients")
+    @ManyToMany(mappedBy = "preferences")
     private List<Recipe> recipes;
 }
