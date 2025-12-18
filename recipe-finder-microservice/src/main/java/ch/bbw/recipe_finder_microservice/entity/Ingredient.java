@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -22,6 +24,7 @@ public class Ingredient {
     private String name;
 
     // mc-mc with Recipe
+    @JsonIgnore
     @ManyToMany(mappedBy = "ingredients")
     private List<Recipe> recipes;
 }
