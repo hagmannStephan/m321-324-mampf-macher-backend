@@ -1,4 +1,3 @@
--- Active: 1766042947393@@postgresdb@5432@postgres@recipe_schema
 -- Insert Preferences
 INSERT INTO preferences (name) VALUES 
 ('Vegetarian'),

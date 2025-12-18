@@ -1,5 +1,3 @@
--- Active: 1766042947393@@postgresdb@5432@postgres@public
-
 -- Create schema if not exists
 CREATE SCHEMA IF NOT EXISTS recipe_schema;
 
