@@ -36,4 +36,6 @@ INSERT INTO preferences_recipe (preferences_id, recipe_id) VALUES
 (1, 1), (2, 1),  -- Vegetarian, Gluten-Free → Chocolate Cake
 (1, 2),          -- Vegetarian → Pancakes
 (3, 3),          -- Vegan → Vegan Stir Fry
-(2, 4);          -- Gluten-Free → Gluten-Free Bread
+(2, 4),         -- Gluten-Free → Gluten-Free Bread
+(4, 3),
+(4, 4);

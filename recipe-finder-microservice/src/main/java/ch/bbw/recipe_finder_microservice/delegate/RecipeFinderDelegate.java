@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.bbw.recipe_finder_microservice.entity.*;
 import ch.bbw.recipe_finder_microservice.repository.*;
+import ch.bbw.recipe_finder_microservice.service.RecipeService;
 
 
 @RestController
@@ -23,6 +25,9 @@ public class RecipeFinderDelegate {
 
     @Autowired
     private RecipeRepository recipeRepository;
+
+    @Autowired
+    private RecipeService recipeService;
 
     @GetMapping("/hello")
     public String hello() {
@@ -47,5 +52,13 @@ public class RecipeFinderDelegate {
     public Recipe getRecipeById(@PathVariable Long id) {
         return recipeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + id));
+    }
+
+    @GetMapping("/recipe")
+    public List<Recipe> getRecipes(
+            @RequestParam List<String> ingredients,
+            @RequestParam List<String> preferences
+    ) {
+        return recipeService.findRecipes(ingredients, preferences);
     }
 }
