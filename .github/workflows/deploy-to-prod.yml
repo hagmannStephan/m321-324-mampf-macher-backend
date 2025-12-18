@@ -24,3 +24,30 @@ jobs:
 
       - name: Build with Maven
         run: mvn clean verify
+
+    build-and-push:
+      requires: test
+      runs-on: ubuntu-latest
+
+      permissions:
+        contents: read
+        packages: write
+
+      steps:
+        - uses: actions/checkout@v5
+
+        - name: Log in to GHCR
+          run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+        - name: Set image tag
+          id: vars
+          run: echo "tag=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/recipe-finder-microservice:${{ github.sha }}" >> $GITHUB_OUTPUT
+
+        - name: Build Docker image
+          run: docker build -t ${{ steps.vars.outputs.tag }} .
+
+        - name: Push Docker image
+          run: docker push ${{ steps.vars.outputs.tag }}
+
+
+    # deploy:
