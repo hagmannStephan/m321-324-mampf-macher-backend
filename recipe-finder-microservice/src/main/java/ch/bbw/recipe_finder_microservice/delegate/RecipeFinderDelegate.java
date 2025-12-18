@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import ch.bbw.recipe_finder_microservice.entity.*;
@@ -19,6 +20,9 @@ public class RecipeFinderDelegate {
 
     @Autowired
     private PreferencesRepository preferencesRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     @GetMapping("/hello")
     public String hello() {
@@ -37,5 +41,11 @@ public class RecipeFinderDelegate {
         return preferencesRepository.findAll().stream()
                 .map(Preferences::getName)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/recipe/{id}")
+    public Recipe getRecipeById(@PathVariable Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + id));
     }
 }
