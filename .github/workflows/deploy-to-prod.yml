@@ -64,11 +64,14 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} bash -s << 'EOF'
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} bash -s << EOF
             set -e
 
-            echo "${GITHUB_TOKEN}" | sudo docker login ghcr.io --username "${GITHUB_ACTOR}" --password-stdin
+            echo "\$GITHUB_TOKEN" | sudo docker login ghcr.io --username "\$GITHUB_ACTOR" --password-stdin
 
             cd /opt/mampf-macher/m321-324-mampf-macher-backend
 
@@ -77,6 +80,3 @@ jobs:
 
             sudo docker image prune -f
           EOF
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
