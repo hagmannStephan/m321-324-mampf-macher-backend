@@ -24,6 +24,7 @@ jobs:
         run: mvn clean verify
 
   build-and-push:
+    name: build-and-push
     needs: test
     runs-on: ubuntu-latest
     permissions:
@@ -42,7 +43,7 @@ jobs:
           docker build \
             --build-arg SERVICE_DIR=recipe-finder-microservice \
             -t ghcr.io/hagmannstephan/recipe-finder-microservice:latest .
-          docker push ghcr.io/hagmannstephan/recipe-finder-microservice:$latest
+          docker push ghcr.io/hagmannstephan/recipe-finder-microservice:latest
 
       - name: Build and push Store Checkout
         run: |
@@ -57,6 +58,7 @@ jobs:
             --build-arg SERVICE_DIR=store-items-microservice \
             -t ghcr.io/hagmannstephan/store-items-microservice:latest .
           docker push ghcr.io/hagmannstephan/store-items-microservice:latest
+
   deploy:
     name: deploy-to-vps
     needs: build-and-push
