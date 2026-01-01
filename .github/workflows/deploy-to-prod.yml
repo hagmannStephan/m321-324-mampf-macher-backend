@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      # TODO: Remove as soon as pipeline works
-      - ci-cd/deploy-to-prod
 
 jobs:
   test:
@@ -58,3 +56,28 @@ jobs:
             --build-arg SERVICE_DIR=store-items-microservice \
             -t ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }}
+  deploy:
+    name: Deploy to VPS
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy via SSH
+        run: |
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            cd /opt/mampf-macher
+
+            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+
+            docker compose pull
+            docker compose up -d --remove-orphans
+
+            docker image prune -f
+          EOF
