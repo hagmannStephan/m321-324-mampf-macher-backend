@@ -42,22 +42,28 @@ jobs:
         run: |
           docker build \
             --build-arg SERVICE_DIR=recipe-finder-microservice \
-            -t ghcr.io/hagmannstephan/recipe-finder-microservice:latest .
+            -t ghcr.io/hagmannstephan/recipe-finder-microservice:latest \
+            -t ghcr.io/hagmannstephan/recipe-finder-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/recipe-finder-microservice:latest
+          docker push ghcr.io/hagmannstephan/recipe-finder-microservice:${{ github.sha }}
 
       - name: Build and push Store Checkout
         run: |
           docker build \
             --build-arg SERVICE_DIR=store-checkout-microservice \
-            -t ghcr.io/hagmannstephan/store-checkout-microservice:latest .
+            -t ghcr.io/hagmannstephan/store-checkout-microservice:latest \
+            -t ghcr.io/hagmannstephan/store-checkout-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-checkout-microservice:latest
+          docker push ghcr.io/hagmannstephan/store-checkout-microservice:${{ github.sha }}
 
       - name: Build and push Store Items
         run: |
           docker build \
             --build-arg SERVICE_DIR=store-items-microservice \
-            -t ghcr.io/hagmannstephan/store-items-microservice:latest .
+            -t ghcr.io/hagmannstephan/store-items-microservice:latest \
+            -t ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-items-microservice:latest
+          docker push ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }}
 
   deploy:
     name: deploy-to-vps
