@@ -7,41 +7,30 @@ on:
 
 jobs:
   test:
-    name: test
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Set up Java
-        uses: actions/setup-java@v3
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v3
         with:
           java-version: 21
           distribution: temurin
-
-      - name: Build with Maven
-        run: mvn clean verify
+      - run: mvn clean verify
 
   build-and-push:
-    name: build-and-push
     needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
       - name: Log in to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Recipe Finder
         run: |
-          docker build \
-            --build-arg SERVICE_DIR=recipe-finder-microservice \
+          docker build --build-arg SERVICE_DIR=recipe-finder-microservice \
             -t ghcr.io/hagmannstephan/recipe-finder-microservice:latest \
             -t ghcr.io/hagmannstephan/recipe-finder-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/recipe-finder-microservice:latest
@@ -49,8 +38,7 @@ jobs:
 
       - name: Build and push Store Checkout
         run: |
-          docker build \
-            --build-arg SERVICE_DIR=store-checkout-microservice \
+          docker build --build-arg SERVICE_DIR=store-checkout-microservice \
             -t ghcr.io/hagmannstephan/store-checkout-microservice:latest \
             -t ghcr.io/hagmannstephan/store-checkout-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-checkout-microservice:latest
@@ -58,18 +46,15 @@ jobs:
 
       - name: Build and push Store Items
         run: |
-          docker build \
-            --build-arg SERVICE_DIR=store-items-microservice \
+          docker build --build-arg SERVICE_DIR=store-items-microservice \
             -t ghcr.io/hagmannstephan/store-items-microservice:latest \
             -t ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-items-microservice:latest
           docker push ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }}
 
   deploy:
-    name: deploy-to-vps
     needs: build-and-push
     runs-on: ubuntu-latest
-
     steps:
       - name: Setup SSH
         run: |
@@ -80,13 +65,18 @@ jobs:
 
       - name: Deploy via SSH
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /opt/mampf-macher/m321-324-mampf-macher-backend
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} bash -s << 'EOF'
+            set -e
 
-            sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            echo "${GITHUB_TOKEN}" | sudo docker login ghcr.io --username "${GITHUB_ACTOR}" --password-stdin
+
+            cd /opt/mampf-macher/m321-324-mampf-macher-backend
 
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans
 
             sudo docker image prune -f
           EOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_ACTOR: ${{ github.actor }}
