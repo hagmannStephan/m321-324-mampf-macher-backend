@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    name: Test
+    name: test
     runs-on: ubuntu-latest
 
     steps:
@@ -58,7 +58,7 @@ jobs:
             -t ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }} .
           docker push ghcr.io/hagmannstephan/store-items-microservice:${{ github.sha }}
   deploy:
-    name: Deploy to VPS
+    name: deploy-to-vps
     needs: build-and-push
     runs-on: ubuntu-latest
 
