@@ -55,6 +55,9 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     steps:
       - name: Setup SSH
         run: |
@@ -64,19 +67,18 @@ jobs:
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_ACTOR: ${{ github.actor }}
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} bash -s << EOF
             set -e
 
-            echo "\$GITHUB_TOKEN" | sudo docker login ghcr.io --username "\$GITHUB_ACTOR" --password-stdin
+            echo "${{ secrets.GITHUB_TOKEN }}" | \
+              sudo docker login ghcr.io \
+                --username "${{ github.actor }}" \
+                --password-stdin
 
             cd /opt/mampf-macher/m321-324-mampf-macher-backend
 
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans
-
             sudo docker image prune -f
           EOF
