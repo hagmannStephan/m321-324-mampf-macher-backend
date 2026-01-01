@@ -24,6 +24,7 @@ jobs:
         run: mvn clean verify
 
   build-and-push:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -72,12 +73,12 @@ jobs:
       - name: Deploy via SSH
         run: |
           ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /opt/mampf-macher
+            cd /opt/mampf-macher/m321-324-mampf-macher-backend
 
-            docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+            sudo docker login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
 
-            docker compose pull
-            docker compose up -d --remove-orphans
+            sudo docker compose pull
+            sudo docker compose up -d --remove-orphans
 
-            docker image prune -f
+            sudo docker image prune -f
           EOF
