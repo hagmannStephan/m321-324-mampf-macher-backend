@@ -5,10 +5,10 @@ INSERT INTO recipe_schema.preferences (name) VALUES
 ('Dairy-Free');
 
 INSERT INTO recipe_schema.recipe (name, description, recipe_url) VALUES
-('Chocolate Cake', 'Rich and moist chocolate cake', 'https://example.com/chocolate-cake'),
-('Pancakes', 'Fluffy breakfast pancakes', 'https://example.com/pancakes'),
-('Vegan Stir Fry', 'Quick and healthy vegan stir fry', 'https://example.com/vegan-stir-fry'),
-('Gluten-Free Bread', 'Soft gluten-free bread', 'https://example.com/gluten-free-bread');
+('Chocolate Cake', 'Rich and moist chocolate cake', 'https://www.bettybossi.ch/de/rezepte/rezept/grossmutters-schokoladekuchen-10004646/'),
+('Pancakes', 'Fluffy breakfast pancakes', 'https://www.bettybossi.ch/de/rezepte/rezept/pancakes-10007372/'),
+('Vegan Stir Fry', 'Quick and healthy vegan stir fry', 'https://www.noracooks.com/vegan-stir-fry/'),
+('Gluten-Free Bread', 'Soft gluten-free bread', 'https://www.mamaknowsglutenfree.com/easy-gluten-free-bread/');
 
 INSERT INTO recipe_schema.ingredients (name) VALUES
 ('flour'),
