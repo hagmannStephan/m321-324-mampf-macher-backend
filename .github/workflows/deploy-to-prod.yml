@@ -78,6 +78,7 @@ jobs:
 
             cd /opt/mampf-macher/m321-324-mampf-macher-backend
 
+            sudo git pull
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans
             sudo docker image prune -f
