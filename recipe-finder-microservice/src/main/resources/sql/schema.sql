@@ -1,6 +1,8 @@
 DROP SCHEMA IF EXISTS recipe_schema CASCADE;
 CREATE SCHEMA recipe_schema;
 
+SET search_path TO recipe_schema;
+
 CREATE TABLE recipe_schema.preferences (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(64) NOT NULL
