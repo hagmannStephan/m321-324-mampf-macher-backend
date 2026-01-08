@@ -18,33 +18,32 @@ public class RecipeService {
 
     public List<Recipe> findRecipes(
             List<String> ingredientNames,
-            List<String> preferenceNames
-    ) {
+            List<String> preferenceNames) {
+        final List<String> safeIngredientNames = ingredientNames == null ? List.of() : ingredientNames;
 
-        List<Recipe> candidates =
-            preferenceNames.isEmpty()
+        final List<String> safePreferenceNames = preferenceNames == null ? List.of() : preferenceNames;
+
+        List<Recipe> candidates = safePreferenceNames.isEmpty()
                 ? recipeRepository.findAll()
                 : recipeRepository.findByAllPreferences(
-                    preferenceNames,
-                    preferenceNames.size()
-                );
+                        safePreferenceNames,
+                        safePreferenceNames.size());
 
         return candidates.stream()
-            .map(recipe -> Map.entry(
-                recipe,
-                countMatchingIngredients(recipe, ingredientNames)
-            ))
-            // at least one ingredient match
-            .filter(entry -> entry.getValue() > 0)
-            .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
-            .map(Map.Entry::getKey)
-            .toList();
+                .map(recipe -> Map.entry(
+                        recipe,
+                        countMatchingIngredients(recipe, safeIngredientNames)))
+                // at least one ingredient match
+                .filter(entry -> entry.getValue() > 0)
+                .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                .map(Map.Entry::getKey)
+                .toList();
     }
 
     private int countMatchingIngredients(Recipe recipe, List<String> ingredientNames) {
         return (int) recipe.getIngredients().stream()
-            .map(Ingredient::getName)
-            .filter(ingredientNames::contains)
-            .count();
+                .map(Ingredient::getName)
+                .filter(ingredientNames::contains)
+                .count();
     }
 }
