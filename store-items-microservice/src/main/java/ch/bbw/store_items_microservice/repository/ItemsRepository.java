@@ -1,14 +1,13 @@
 package ch.bbw.store_items_microservice.repository;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.data.jpa.repository.JpaRepository;
 import ch.bbw.store_items_microservice.entity.Items;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ItemsRepository extends JpaRepository<Items, Long> {
-
-    List<Items> findAll();
-    
-} 
+    Optional<Items> findByNameIgnoreCase(String name);
+    boolean existsByNameIgnoreCase(String name);
+}
