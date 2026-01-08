@@ -57,7 +57,7 @@ public class RecipeFinderDelegate {
     @GetMapping("/recipe")
     public List<Recipe> getRecipes(
             @RequestParam List<String> ingredients,
-            @RequestParam List<String> preferences
+            @RequestParam(required = false) List<String> preferences
     ) {
         return recipeService.findRecipes(ingredients, preferences);
     }
