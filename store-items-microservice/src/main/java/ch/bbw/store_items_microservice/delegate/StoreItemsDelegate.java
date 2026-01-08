@@ -35,6 +35,13 @@ public class StoreItemsDelegate {
         return ItemResponse.fromEntity(item);
     }
 
+    @GetMapping("/by-ids")
+    public List<ItemResponse> getItemsByIds(@RequestParam List<Long> ids) {
+        return itemsRepository.findAllById(ids).stream()
+                .map(ItemResponse::fromEntity)
+                .toList();
+    }
+
     // ---- POST ----
 
     @PostMapping
