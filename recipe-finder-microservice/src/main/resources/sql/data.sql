@@ -1,3 +1,5 @@
+SET search_path TO recipe_schema;
+
 INSERT INTO recipe_schema.preferences (name) VALUES
 ('Vegetarian'),
 ('Gluten-Free'),
