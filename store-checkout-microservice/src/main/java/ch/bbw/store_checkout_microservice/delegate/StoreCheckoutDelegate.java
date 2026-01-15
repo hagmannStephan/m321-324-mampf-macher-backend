@@ -83,7 +83,7 @@ public class StoreCheckoutDelegate {
     }
 
     public record CartLine(Long itemId, int quantity) {}
-    public record CheckoutRequest(List<CartLine> items) {}
+    public record CheckoutRequest(String fullName, String email, String address, List<CartLine> items) {}
 
     public record CheckoutLine(Long itemId, String name, Double unitPrice, int quantity, double lineTotal) {}
     public record CheckoutPreviewResponse(List<CheckoutLine> lines, double total) {}
