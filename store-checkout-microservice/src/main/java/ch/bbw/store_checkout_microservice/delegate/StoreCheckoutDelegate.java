@@ -47,46 +47,46 @@ public class StoreCheckoutDelegate {
         return buildPreview(req.items()); // allow null
     }
 
-private CheckoutPreviewResponse buildPreview(List<CartLine> cart) {
-    if (cart == null || cart.isEmpty()) {
-        return new CheckoutPreviewResponse(List.of(), 0.0);
-    }
-
-    // keep only valid lines
-    List<CartLine> valid = cart.stream()
-            .filter(c -> c != null && c.id() != null && c.quantity() != null)
-            .toList();
-
-    if (valid.isEmpty()) {
-        return new CheckoutPreviewResponse(List.of(), 0.0);
-    }
-
-    List<Long> ids = valid.stream().map(CartLine::id).distinct().toList();
-    List<ItemsClient.ItemDto> items = itemsClient.getItemsByIds(ids);
-
-    Map<Long, ItemsClient.ItemDto> byId = items.stream()
-            .collect(Collectors.toMap(ItemsClient.ItemDto::id, x -> x));
-
-    List<CheckoutLine> lines = new ArrayList<>();
-    double total = 0.0;
-
-    for (CartLine c : valid) {
-        if (c.quantity() <= 0) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "quantity must be > 0");
+    private CheckoutPreviewResponse buildPreview(List<CartLine> cart) {
+        if (cart == null || cart.isEmpty()) {
+            return new CheckoutPreviewResponse(List.of(), 0.0);
         }
 
-        ItemsClient.ItemDto item = byId.get(c.id());
-        if (item == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found: " + c.id());
+        // keep only valid lines
+        List<CartLine> valid = cart.stream()
+                .filter(c -> c != null && c.id() != null && c.quantity() != null)
+                .toList();
+
+        if (valid.isEmpty()) {
+            return new CheckoutPreviewResponse(List.of(), 0.0);
         }
 
-        double lineTotal = item.price() * c.quantity();
-        total += lineTotal;
-        lines.add(new CheckoutLine(item.id(), item.name(), item.price(), c.quantity(), lineTotal));
-    }
+        List<Long> ids = valid.stream().map(CartLine::id).distinct().toList();
+        List<ItemsClient.ItemDto> items = itemsClient.getItemsByIds(ids);
 
-    return new CheckoutPreviewResponse(lines, total);
-}
+        Map<Long, ItemsClient.ItemDto> byId = items.stream()
+                .collect(Collectors.toMap(ItemsClient.ItemDto::id, x -> x));
+
+        List<CheckoutLine> lines = new ArrayList<>();
+        double total = 0.0;
+
+        for (CartLine c : valid) {
+            if (c.quantity() <= 0) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "quantity must be > 0");
+            }
+
+            ItemsClient.ItemDto item = byId.get(c.id());
+            if (item == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item not found: " + c.id());
+            }
+
+            double lineTotal = item.price() * c.quantity();
+            total += lineTotal;
+            lines.add(new CheckoutLine(item.id(), item.name(), item.price(), c.quantity(), lineTotal));
+        }
+
+        return new CheckoutPreviewResponse(lines, total);
+    }
 
     public record CartLine(Long id, Integer quantity) {}
     public record CheckoutRequest(String fullName, String email, String address, List<CartLine> items) {}
